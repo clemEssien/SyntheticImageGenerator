@@ -1,0 +1,15 @@
+.env
+__pycache__/
+.vscode/
+data/synthetic_dataset/train_annotations.json
+data/synthetic_dataset/train
+data/synthetic_dataset/val
+detectron2
+output/last_checkpoint
+output/coco_instances_results.json
+output/events.*
+output/*.pth
+output/*.lock
+output/*.json
+output/training.*
+output/events.out.tfevents.*
