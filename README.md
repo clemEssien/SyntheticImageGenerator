@@ -1,183 +1,107 @@
 # Synthetic Yeast Cell Image Generator
 
 ## Project Overview
-This project generates synthetic fluorescence microscopy images of yeast cells for training cell segmentation algorithms. The output includes a fluorescence image and a corresponding labeled image that uniquely identifies each cell.
+This project generates synthetic fluorescence microscopy images of yeast cells for training cell segmentation algorithms. It includes tools to create synthetic images, convert them to COCO format for object detection models, and a model training setup using Detectron2.
 
-## Requirements
-- Python 3.x
-- `numpy`
-- `scipy`
-- `matplotlib`
+## Prerequisites
+- Anaconda / Miniconda
 
-To install the required packages, run:
+## Environment Setup
+First, create and activate a new conda environment:
 ```bash
-pip install numpy scipy matplotlib
-conda install numpy scipy matplotlib
-conda install -c conda-forge opencv
-
+conda create -n env3 python=3.8
 ```
-
-## Usage
-The main file, ```synthetic_image_generator.py```, contains the ```SyntheticYeastImageGenerator``` class. <br> 
-Below is an example script demonstrating how to use the generator.
-
+From the anaconda prompt, run: 
+```bash 
+conda activate env3
 ```
-from synthetic_image_generator import SyntheticYeastImageGenerator
-
-# Initialize the generator with desired image dimensions
-generator = SyntheticYeastImageGenerator(width=512, height=512)
-
-# Generate images with custom parameters
-generator.generate_cells(num_cells=15, cell_size_range=(20, 40), fluorescence_level=2000, noise_level=50)
-
-# Display the generated images
-generator.display_images()
-
-# Save images
-generator.save_images("fluorescence_image.png", "label_image.png")
-
-```
-
-## Expected Output
-Running the above code will generate:
-
-1. ```fluorescence_image.png```: A synthetic fluorescence image in uint16 format.
-2. ```label_image.png```: A labeled image with unique integer labels for each cell in uint8 format.
-
-## Input Parameters
-```width, height```: Dimensions of the generated images.
-```num_cells```: Number of cells to generate.
-```cell_size_range```: Range for cell diameters.
-```fluorescence_level```: Mean fluorescence intensity of the cells.
-```noise_level```: Standard deviation of background noise.
-
-## Observations and Assumptions
-- Cells are generated as circular shapes; future versions could incorporate elliptical or irregular shapes.
-- Gaussian noise is added to simulate camera background noise.
-- Each cell is assigned a unique integer ID up to a maximum of 255 cells per image.
-
-## References
-This project uses the following libraries:
-
-```numpy``` for array manipulation <br>
-```scipy``` for generating random distributions and Gaussian filtering <br>
-```matplotlib``` for image visualization and saving <br>
-
-```pip install torch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 -f https://download.pytorch.org/whl/cpu```
-
-```
-Solved. To install Detectron2, it is necessary to install some packages before. Here are the steps to install the required packages:
-
-Install Cython: Cython improves the use of C-based third-party number-crunching libraries like NumPy. Because Cython code compiles to C, it can interact with those libraries directly, and take Python's bottlenecks out of the loop.
-To install Cython, run the following command:
-pip install cython
-
-Install CMake: CMake can be used to configure, build, and package the native extensions for the Python package. The cmake tool helps manage the build process and dependencies, and generates the necessary files for the build system to compile and package the native extensions into a wheel distribution.
-To install CMake, run the following command:
-pip install Cmake
-
-Add CMake to the Windows Environment PATH variables: It is very important to add CMake to the Environment PATH variables. To do this, download the latest release of CMake from https://perso.uclouvain.be/allan.barrea/opencv/building_tools.html and install it according to the instructions provided on the webpage.
-Make sure to select “Add CMake to the system PATH for all users” when prompted. After installation, check your environment variable path to ensure that CMake has been added.
-
-By following these steps, you should be able to install Detectron2 on Windows 11.
-
-```
-``` conda create -n env3 python=3.8 ```
-open conda prompt and run the following
+### Install Dependencies
+Install PyTorch, torchvision, torchaudio, and cudatoolkit: <br>
 ``` conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch ```
 ``` pip install cython ```
-``` pip install opencv-python ```
 
-``` git clone https://github.com/facebookresearch/detectron2.git ```
-```cd detectron2 ``` Run the following two commands <br>
-    <pre> ``` pip install -e . ``` <br>
-    ``` pip install opencv-python ```  </pre><br>
+<!-- pip install opencv-python -->
 
-```conda install conda-forge::streamlit```
- ``` conda install conda-forge::pycocotools ```
+## Setting up detectron2
+From the project root directory, run the following commands:
+```bash 
+git clone https://github.com/facebookresearch/detectron2.git
+cd detectron2 
+pip install -e .
+```
+```bash
+conda install -c conda-forge opencv cython pycocotools streamlit
+``` 
 
-continue
+## Project Structure
 
+```bash <pre>
 SyntheticImageGenerator/
 ├── app/
 │   ├── ui.py                    # Streamlit UI for generating synthetic images
 │   └── image_gen.py             # SyntheticImageGenerator class implementation
 ├── data/
-│   └── synthetic_dataset/
-│       ├── train/               # Training images and labels
-│       ├── val/                 # Validation images and labels
-│       ├── train_annotations.json    # COCO-format training annotations file generated by coco_format.py
-│       └── val_annotations.json   # COCO-format validation annotations file generated by coco_format.py
-|
+│   ├── synthetic_dataset/
+│   │   ├── train/               # Training images and labels
+│   │   ├── val/                 # Validation images and labels
+│   │   ├── train_annotations.json    # COCO-format training annotations file
+│   │   └── val_annotations.json      # COCO-format validation annotations file
 ├── models/                      # Folder for saving trained models
-│   └── mask_rcnn_synthetic.pth  # Optional location for trained model (if configured here)
-├── detectron2/                  # Detectron2 library (if cloned locally, optional)
-├── output/                      # Default output directory for Detectron2
-│   ├── model_final.pth          # Trained model weights saved by Detectron2
-│   └── metrics.json             # Training and evaluation metrics for loss plots
+│   └── mask_rcnn_synthetic.pth  # Trained model file
+├── output/                      # Output directory for Detectron2
+│   ├── model_final.pth          # Trained model weights
+│   └── metrics.json             # Training and evaluation metrics
 ├── train/
 │   ├── train_detectron2.py      # Training script for Detectron2
-│   ├── visualize_detectron2.py  # Visualization script for predictions on sample images
+│   ├── visualize_detectron2.py  # Visualization script for model predictions
 │   └── plot_training_curves.py  # Script for plotting training loss curves
 ├── utils/
-│   ├── coco_format.py           # Script to convert synthetic data to COCO format
+│   ├── coco_format.py           # Script to convert data to COCO format
 │   └── register_synthetic.py    # Script to register dataset with Detectron2
-├── requirements.txt             # List of dependencies for the project
-└── README.md                    # Documentation on how to set up and run the project
+├── requirements.txt             # List of project dependencies
+└── README.md                    # Project documentation
 
+  ```
+        
+## Usage
+Navigate back to the root directory and following the instructions below
+1. To generate images from command line, run the command: 
+```bash
+python app/image_gen.py
+``` 
+2. To generate images using the UI and prepare them for model training run the command:
+```bash 
+   python streamlit run app/ui.py 
+```
 
+Set parameters, when Generate Batch button is clicked, the images are generated in ``` data/synthetic_dataset``` directory by default, then the images are automatically split into training and validation in the ratio 80:20
+and are saved in ```data/synthetic_dataset/train and data/synthetic_dataset/val ``` respectively.
 
-``` bash  
-python utils/coco_format.py --dataset_dir data/synthetic_dataset/train --output_file data/synthetic_dataset/train_annotations.json
-
+3. To convert to COCO Format: Convert the generated images to COCO format for training run the following command: 
+```bash 
+python utils/coco_format.py --dataset_dir data/synthetic_dataset/train --output_file data/synthetic_dataset/train_annotations.json 
+```
+```bash 
 python utils/coco_format.py --dataset_dir data/synthetic_dataset/val --output_file data/synthetic_dataset/val_annotations.json
+``` 
+- To inspect the annotations:
+```bash 
+python inspect_coco_annotations.py 
+```
 
-python inspect_coco_annotations.py
-
+4. Train Model: Use the training script to train a model with Detectron2.
+```bash
 python train/train_detectron2.py
+```
 
-python train/visualize_detectron2.py
+5. Plot Training Curves: Visualize training loss and other metrics.
 
+```bash
 python train/plot_training_curves.py
 ```
 
-Execution Flow: Test the complete workflow:
-
-Generate images using the UI.
-Convert them to COCO format.
-Train the model using Detectron2.
-Visualize predictions and metrics.
-
-
-Further enhancement
-Potential Enhancements:
-Dynamic Visualization: Instead of static images, consider interactive visualization tools like Plotly or Bokeh that can allow users to interact with the data points (zoom, pan, etc.). This could be particularly useful for detailed inspection of the labeled images.
-
-Error Handling: Implement more robust error handling around file operations and parameter settings to prevent the application from crashing and to provide users with clear error messages.
-
-Logging: Incorporate logging for batch processing and dataset splitting to help with troubleshooting and to ensure data integrity throughout the processes.
-
-Performance Considerations: For larger batch sizes or higher-resolution images, performance might become an issue. Consider implementing asynchronous processing or using a progress bar to improve the user experience during these potentially long operations.
-
-Enhanced Parameter Customization: Offer more granular control or presets for parameters based on typical use cases, which could help new users get started more easily.
-
-Validation and Testing: Adding a section or functionality within the app that allows users to run predefined tests (like generating a set number of images and verifying their correctness) can build confidence in the tool's reliability.
-
-
-coco_format
-Suggestions for Improvement
-Error Handling:
-
-Add error handling for file operations, especially when files might not exist or when file reading might fail. This will make the script more robust in different environments or when unexpected naming issues occur.
-Validation of Label Files:
-
-Implement a check to ensure that each image_file has a corresponding label_file before proceeding. This can prevent runtime errors and ensure the script does not skip necessary files inadvertently.
-Category Flexibility:
-
-Currently, the category is hardcoded as {"id": 0, "name": "cell"}. If your application might later include multiple types of cells or annotations, consider modifying the script to handle multiple categories. This could be achieved by mapping label values to different category IDs or by taking category information as an input.
-Parameterization and Usability:
-
-You might consider adding more command-line arguments for common parameters like category names or IDs, or even a flag to control whether to skip the background. This makes the script more flexible and adaptable to different datasets.
-Progress Feedback:
-
-For large datasets, processing might take time. Consider adding progress feedback using a simple progress bar or log messages that report the number of images processed.
+# Results
+The final results will be saved in 
+```bash 
+output/final_evaluation_results.txt 
+```
