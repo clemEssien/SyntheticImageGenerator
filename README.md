@@ -91,7 +91,7 @@ python inspect_coco_annotations.py
 python train/train_detectron2.py
 ```
 
-5. Plot Training Curves: Visualize training loss and other metrics.
+5. Plot Training Curves: Visualize training loss and model predictions.
 
 ```bash
 python train/plot_training_curves.py
