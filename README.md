@@ -19,8 +19,8 @@ conda activate env3
 Install PyTorch, torchvision, torchaudio, and cudatoolkit: <br>
 ``` conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch ```
 ``` pip install cython ```
-
-<!-- pip install opencv-python -->
+``` pip install opencv-python ```
+``` conda install -c conda-forge pycocotools streamlit ```
 
 ## Setting up detectron2
 From the project root directory, run the following commands:
@@ -29,9 +29,6 @@ git clone https://github.com/facebookresearch/detectron2.git
 cd detectron2 
 pip install -e .
 ```
-```bash
-conda install -c conda-forge opencv cython pycocotools streamlit
-``` 
 
 ## Project Structure
 

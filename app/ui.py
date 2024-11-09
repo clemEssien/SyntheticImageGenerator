@@ -75,6 +75,7 @@ if st.button("Generate Batch"):
             generator.save_images(fluorescence_path, labeled_path)
             progress_bar.progress((i + 1) / total_images)
         st.success(f"Batch of {batch_size} images saved to {save_dir}.")
+        
     generator.split_dataset(save_dir)
 # Display instructions for user
 st.write("Adjust the parameters and click 'Generate Image' to preview the synthetic images. You can also save individual images or generate a batch of images.")

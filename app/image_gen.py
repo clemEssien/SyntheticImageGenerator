@@ -32,6 +32,7 @@ class SyntheticImageGenerator:
 
     def generate_image(self) -> Tuple[np.ndarray, np.ndarray]:
         """Generate a synthetic fluorescence image and a labeled image with controlled overlap."""
+        
         # Initialize background with low-level intensity
         fluorescence_image = np.full((self.height, self.width), self.background_intensity, dtype=np.uint16)
         labeled_image = np.zeros((self.height, self.width), dtype=np.uint8)
@@ -111,7 +112,7 @@ class SyntheticImageGenerator:
             else:
                 raise ValueError(f"Parameter {key} is not valid for SyntheticImageGenerator.")
 
-    # Method placeholder for ML model training integration
+    # Method to split the generated images into training and validation sets
     def split_dataset(self, save_dir: str):
         """Split the dataset into training and validation sets."""
         train_dir = os.path.join(save_dir, "train")
@@ -143,7 +144,6 @@ class SyntheticImageGenerator:
         
 # Example usage
 if __name__ == "__main__":
-    # Parameters for the synthetic image generation
     # Create an instance with default parameters
     generator = SyntheticImageGenerator()
 
