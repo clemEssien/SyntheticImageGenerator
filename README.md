@@ -17,10 +17,10 @@ conda activate env3
 ```
 ### Install Dependencies
 Install PyTorch, torchvision, torchaudio, and cudatoolkit: <br>
-``` conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch ``` <br>
-``` pip install cython ``` <br>
-``` pip install opencv-python ``` <br>
-``` conda install -c conda-forge pycocotools streamlit ``` <br>
+- ``` conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch ``` <br>
+- ``` pip install cython ``` <br>
+- ``` pip install opencv-python ``` <br>
+- ``` conda install -c conda-forge pycocotools streamlit ``` <br>
 
 ## Setting up detectron2
 From the project root directory, run the following commands:
@@ -96,7 +96,9 @@ python train/train_detectron2.py
 ```bash
 python train/plot_training_curves.py
 ```
-
+```bash
+python train/visualize_detectron2.py
+```
 # Results
 The final results will be saved in 
 ```bash 
